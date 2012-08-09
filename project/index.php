@@ -3,10 +3,10 @@
 define( 'APP_PATH', dirname(__FILE__) );
 
 //可不设置 系统框架回自动设置
-define( 'FRAMEWORK_PATH', APP_PATH.'/../lightPHP' );
+define( 'LIGHT_PATH', APP_PATH.'/../LightPHP' );
 
 //加载框架
-require_once( FRAMEWORK_PATH.'/Framework.php' );
+require_once( LIGHT_PATH.'/LightPHP.php' );
 
 //框架获取前端控制器实例
 $framework = ControllerFront::getInstance();
