@@ -3,7 +3,7 @@
  * 目前继承于spl中的fileinfo 该类只读
  * 有些不合理 因为view也直接用到了这个类 暂定
  */
-class FileInfo extends SplFileInfo {
+class Light_File_Info extends SplFileInfo {
     public function __construct( $filename, $ext = '' ){
         if ( !$this->getExtension( $filename ) ) {
             $filename .=  $ext;

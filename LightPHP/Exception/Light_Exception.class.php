@@ -4,7 +4,7 @@
  * 处理异常 暂无写日志功能 只是简单的输出
  *
  */
-class FrameworkException extends Exception {
+class Light_Exception extends Exception {
     public function __construct( $message = '' ){
         $content = $message ? $message : $this->getMessage();
         

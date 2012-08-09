@@ -3,7 +3,7 @@
  * 控制器主类
  * 抽象, 提供所有控制器的基本方法 如调用view等
  */
-abstract class Controller {
+abstract class Light_Controller {
     private $view;
     protected $controller;
     protected $action;
@@ -15,10 +15,10 @@ abstract class Controller {
         $this->group = $group;
         
         //获取view引擎 可能是第3方的也说不定 HOHOHO...
-        $this->view = View::getEngine();
+        $this->view = Light_View::getEngine();
 
         if ( !$this->view->template_dir ) {
-        	$this->view->template_dir = Register::get('viewDirectory');
+        	$this->view->template_dir = Light_Register::get('viewDirectory');
         }
         
         $this->__before();
@@ -63,7 +63,7 @@ abstract class Controller {
      *
      */
     public function __empty(){
-        FrameworkException::error( "控制器{$this->controller}中不存在{$this->action}方法" );
+        Light_Exception::error( "控制器{$this->controller}中不存在{$this->action}方法" );
     }
     
     /**

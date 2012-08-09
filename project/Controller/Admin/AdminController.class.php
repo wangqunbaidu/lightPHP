@@ -1,5 +1,5 @@
 <?php
-class AdminController extends Controller{
+class AdminController extends Light_Controller{
     public function index(){
         echo 123;
     }

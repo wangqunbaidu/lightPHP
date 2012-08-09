@@ -4,7 +4,7 @@
  * config为系统提供, 只读
  *
  */
-abstract class Config{
+abstract class Light_Config{
     //path
     protected $path;
     

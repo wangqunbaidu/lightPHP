@@ -3,5 +3,5 @@
  * Model 类
  *
  */
-class Model{}
+class Light_Model{}
 ?>

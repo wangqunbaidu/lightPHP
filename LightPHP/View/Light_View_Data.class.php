@@ -3,7 +3,7 @@
  * view data 存储类
  *
  */
-class ViewData{
+class Light_View_Data{
     protected $data = array();
     
     /**

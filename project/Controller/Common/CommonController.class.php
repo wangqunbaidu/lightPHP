@@ -1,5 +1,5 @@
 <?php
-abstract class CommonController extends Controller{
+abstract class CommonController extends Light_Controller{
     public function __before(){
         $this->display('Common/header.tpl');
     }

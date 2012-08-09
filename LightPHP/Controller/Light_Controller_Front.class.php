@@ -5,7 +5,7 @@
  * 用于分发路由
  */
 
-class ControllerFront{
+class Light_Controller_Front{
     //instance
     private static $instance;
     
@@ -31,7 +31,7 @@ class ControllerFront{
      * @param unknown_type $path
      */
     public function setControllerDirectory( $path ){
-        Register::set( 'controllerDirectory', rtrim( $path, '/' ) . '/' );
+        Light_Register::set( 'controllerDirectory', rtrim( $path, '/' ) . '/' );
     }
     
     /**
@@ -40,7 +40,7 @@ class ControllerFront{
      * @param unknown_type $path
      */
     public function setModelDirectory( $path ){
-        Register::set( 'modelDirectory', rtrim( $path, '/' ) . '/' );
+        Light_Register::set( 'modelDirectory', rtrim( $path, '/' ) . '/' );
     }
     
     /**
@@ -49,7 +49,7 @@ class ControllerFront{
      * @param unknown_type $path
      */
     public function setViewDirectory( $path ){
-        Register::set( 'viewDirectory', rtrim( $path, '/' ) . '/' );
+        Light_Register::set( 'viewDirectory', rtrim( $path, '/' ) . '/' );
     }
     
     /**
@@ -58,9 +58,9 @@ class ControllerFront{
      * @param unknown_type $path
      */
     public function setConfig( $path ){
-        $config = ConfigFactory::factory( $path );
+        $config = Light_Config_Factory::factory( $path );
 
-        $this->config = Util::arrayMerge( $this->config, $config->get() );
+        $this->config = Light_Util::arrayMerge( $this->config, $config->get() );
     }
     
     /**
@@ -144,7 +144,7 @@ class ControllerFront{
      * @param unknown_type $router
      */
     private function loadController( $router ){
-        $path = Register::get('controllerDirectory') . ( $router['group'] ?  $router['group'] . '/' : '' ) . $router['controller'] . '.class.php';
+        $path = Light_Register::get('controllerDirectory') . ( $router['group'] ?  $router['group'] . '/' : '' ) . $router['controller'] . '.class.php';
 
         return @include_once( $path );
     }
@@ -159,7 +159,7 @@ class ControllerFront{
         $class = new ReflectionClass( $router['controller'] );
 
         //如果该类继承于controller类
-        if ( $class->isSubclassOf( 'Controller' ) ) {
+        if ( $class->isSubclassOf( 'Light_Controller' ) ) {
 
             //检查它的是否拥有方法 action
         	if ( $class->hasMethod( $router['action'] ) ) {
@@ -192,7 +192,7 @@ class ControllerFront{
         
         if ( !$this->loadController( $temp ) ) {
             
-        	FrameworkException::error( "无法加载控制器{$router['controller']}" );
+        	Light_Exception::error( "无法加载控制器{$router['controller']}" );
         } else {
             //执行empty controller
             new $temp['controller']( $router['controller'], $router['action'], $router['group'] );   

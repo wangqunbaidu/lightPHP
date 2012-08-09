@@ -9,7 +9,7 @@ define( 'LIGHT_PATH', APP_PATH.'/../LightPHP' );
 require_once( LIGHT_PATH.'/LightPHP.php' );
 
 //框架获取前端控制器实例
-$framework = ControllerFront::getInstance();
+$framework = Light_Controller_Front::getInstance();
 
 //设置控制器路径
 $framework->setControllerDirectory( APP_PATH.'/Controller' );

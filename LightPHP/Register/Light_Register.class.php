@@ -2,7 +2,7 @@
 /**
  * 该类可缓存model等全局信息
  */
-class Register{
+class Light_Register{
     private static $data = array();
     
     /**

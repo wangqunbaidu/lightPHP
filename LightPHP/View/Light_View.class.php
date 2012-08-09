@@ -1,5 +1,5 @@
 <?php
-require_once( FRAMEWORK_PATH.'/View/ViewData.class.php' );
+require_once( FRAMEWORK_PATH.'/View/Light_View_Data.class.php' );
 
 /**
  *  模板主类
@@ -7,7 +7,7 @@ require_once( FRAMEWORK_PATH.'/View/ViewData.class.php' );
  *  该模板引擎暂不支持 后缀扩展 后缀需自己加上
  *  也不支持自动识别当前控制器和action功能
  */
-class View extends ViewData{
+class Light_View extends Light_View_Data {
     //模板引擎
     //用于第3方引擎
     private static $engine;
@@ -22,7 +22,7 @@ class View extends ViewData{
      */
     public function fetch( $tpl ){
         //实例文件
-        $file = new FileInfo( $this->template_dir . ltrim( $tpl ) );
+        $file = new Light_File_Info( $this->template_dir . ltrim( $tpl ) );
         
         //获取内容
         $content = $file->getFileContent();

@@ -3,7 +3,7 @@
  * 工具类
  *
  */
-class Util{
+class Light_Util{
     /**
      * 处理php函数无法合并多维关联数组的情况
      * 函数处理和js中的深度克隆一样
