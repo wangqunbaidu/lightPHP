@@ -31,7 +31,7 @@ class Light_Controller_Front{
      * @param unknown_type $path
      */
     public function setControllerDirectory( $path ){
-        Light_Register::set( 'controllerDirectory', rtrim( $path, '/' ) . '/' );
+        Light_Controller::setDirectory( $path );
     }
     
     /**
@@ -40,7 +40,7 @@ class Light_Controller_Front{
      * @param unknown_type $path
      */
     public function setModelDirectory( $path ){
-        Light_Register::set( 'modelDirectory', rtrim( $path, '/' ) . '/' );
+        Light_Model::setDirectory( $path );
     }
     
     /**
@@ -49,7 +49,7 @@ class Light_Controller_Front{
      * @param unknown_type $path
      */
     public function setViewDirectory( $path ){
-        Light_Register::set( 'viewDirectory', rtrim( $path, '/' ) . '/' );
+        Light_View::setDirectory( $path );
     }
     
     /**
@@ -144,15 +144,9 @@ class Light_Controller_Front{
      * @param unknown_type $router
      */
     private function loadController( $router ){
-        $path = Light_Register::get('controllerDirectory') . ( $router['group'] ?  $router['group'] . '/' : '' ) . $router['controller'] . '.class.php';
+        $file = 'Controller.' . ( $router['group'] ?  $router['group'] . '.' : '' ) . $router['controller'];
         
-        $result = @include_once( $path );
-       
-        if ( !$result ) {
-        	throw new Light_Exception(" 文件 {$path} 木有找到！ ");
-        }
-        
-        return $result;
+        return Light_Util::import( $file );
     }
     
     /**

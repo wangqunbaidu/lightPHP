@@ -4,6 +4,8 @@
  * 抽象, 提供所有控制器的基本方法 如调用view等
  */
 abstract class Light_Controller {
+    private static $CONTROLLER_DIRECTORY;
+    
     private $view;
     protected $controller;
     protected $action;
@@ -18,7 +20,7 @@ abstract class Light_Controller {
         $this->view = Light_View::getEngine();
 
         if ( !$this->view->template_dir ) {
-        	$this->view->template_dir = Light_Register::get('viewDirectory');
+        	$this->view->template_dir = Light_View::getDirectory();
         }
         
         $this->__before();
@@ -81,6 +83,14 @@ abstract class Light_Controller {
     public function __destruct(){
         //最后执行after魔术函数
         $this->__after();
+    }
+    
+    public static function setDirectory( $path ){
+        self::$CONTROLLER_DIRECTORY = rtrim( $path, '/' ) . '/';
+    }   
+    
+    public static function getDirectory(){
+        return self::$CONTROLLER_DIRECTORY;
     }
 }
 ?>

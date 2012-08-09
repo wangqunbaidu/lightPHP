@@ -15,7 +15,7 @@ class ProductModel{
     //价格
     public $price;
     
-    public function __construct( $name, $price ){
+    public function __construct( $name, $price = 200 ){
         $this->name = $name;
         $this->price = $price;
         

@@ -46,10 +46,10 @@ class Light_Util{
         
         switch ( $prefix ){
             case 'Controller':
-                   $prefix = Light_Register::get('controllerDirectory'); break;
+                   $prefix = Light_Controller::getDirectory(); break;
             
             case 'Model':
-                   $prefix = Light_Register::get('modelDirectory'); break;
+                   $prefix = Light_Model::getDirectory(); break;
                    
             default: '';
         }

@@ -8,6 +8,8 @@ require_once( FRAMEWORK_PATH.'/View/Light_View_Data.class.php' );
  *  也不支持自动识别当前控制器和action功能
  */
 class Light_View extends Light_View_Data {
+    private static $VIEW_DIRECTORY;
+    
     //模板引擎
     //用于第3方引擎
     private static $engine;
@@ -62,6 +64,14 @@ class Light_View extends Light_View_Data {
      */
     public static function getEngine(){
         return self::$engine ? self::$engine : new self();
+    }
+    
+    public static function setDirectory( $path ){
+        self::$VIEW_DIRECTORY = rtrim( $path, '/' ) . '/';
+    } 
+    
+    public static function getDirectory(){  
+        return self::$VIEW_DIRECTORY;       
     }
 }
 ?>

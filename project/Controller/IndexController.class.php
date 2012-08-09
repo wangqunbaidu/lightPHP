@@ -7,10 +7,10 @@ class IndexController extends CommonController{
         //$this->name = 'jsyczhanghao';
         //$this->assign('name', 'jsyczhanghao');
         
-        //require_once( APP_PATH.'/Model/ProductModel.class.php' );
+        require_once( APP_PATH.'/Model/ProductModel.class.php' );
         Light_Util::import('Model.ProductModel');
         
-        $product = new ProductModel('衣服', 200);
+        $product = Light_Model::getModel('Product', '衣服', 200);
         
         $product->save();
         
