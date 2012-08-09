@@ -31,7 +31,7 @@ function import( $path ){
     $path = $prefix . implode( '/', $path ) . '.class.php';
 
     if ( !$result = @include_once( $path ) ) {
-        throw new Light_Exception("文件 {$path} 木有找到！ ");
+        Light_Exception::error("文件 {$path} 木有找到！ ");
     }
 
     return $result;

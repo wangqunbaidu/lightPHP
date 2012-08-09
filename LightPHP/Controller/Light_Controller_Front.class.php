@@ -60,7 +60,7 @@ class Light_Controller_Front{
      */
     public function setConfig( $path ){
         $config = Light_Config::load( $path );
-
+        
         $this->config = merge( $this->config, Light_Config::get() );
     }
     
@@ -105,7 +105,7 @@ class Light_Controller_Front{
      * @return unknown
      */
     private function checkIsGroup( $group = '' ){
-        $grouplist = $this->config['Framework']['group'];
+        $grouplist = $this->config['Framework']['group']['list'];
         
         //如果没有分组 则直接返回
         if ( !$grouplist ) return false;
@@ -121,7 +121,7 @@ class Light_Controller_Front{
      * @return unknown 有可能不存在分组 则返回 空
      */
     private function getDefaultGroup(){
-        return $this->config['Framework']['defaultGroup'];
+        return $this->config['Framework']['group']['default'];
     }
     
     /**
@@ -192,7 +192,7 @@ class Light_Controller_Front{
         $temp['controller'] = 'EmptyController';
         
         if ( !$this->loadController( $temp ) ) {
-        	throw new Light_Exception( "无法加载控制器{$router['controller']}" );
+        	Light_Exception::error( "无法加载控制器{$router['controller']}" );
         } else {
             //执行empty controller
             new $temp['controller']( $router['controller'], $router['action'], $router['group'] );   

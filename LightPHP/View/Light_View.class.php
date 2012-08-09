@@ -14,7 +14,7 @@ class Light_View extends Light_View_Data {
     //用于第3方引擎
     private static $engine;
     
-    public  $template_dir = '';
+    public $template_dir = '';
     
     /**
      * 返回结果 不输出

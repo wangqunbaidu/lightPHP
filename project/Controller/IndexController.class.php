@@ -27,6 +27,27 @@ class IndexController extends CommonController{
         //$this->display('Home/Index/index.tpl');
     }
     
+    public function phpmarkdown(){
+        $string = "
+##title
+###title
+[baidu.com](http://www.baidu.com])
+
+##[title](http://www.baidu.com)
+        ";
+        
+        require_once( APP_PATH.'/Common/lib/php-markdown/markdown.php' );
+        echo "
+            <style>
+                h2{
+                    font-size: 30px;
+                    color: red;
+                }
+            </style>
+        ";
+        echo Markdown( $string );
+    }
+    
     /**
      * 找不到action的时候执行
      *

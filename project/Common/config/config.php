@@ -1,7 +1,9 @@
 <?php
 return array(
     'Framework' => array(
-        'group' => array('Home', 'Admin')
+        'group' => array(
+            'list' => array('Home', 'Admin')
+        )
     )
 );
 ?>
