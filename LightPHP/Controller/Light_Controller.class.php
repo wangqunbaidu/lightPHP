@@ -34,7 +34,7 @@ abstract class Light_Controller {
      * @param unknown_type $name
      * @param unknown_type $value
      */
-    public function assign( $name, $value = '' ){
+    protected function assign( $name, $value = '' ){
         $this->view->assign( $name, $value );
     }
     
@@ -45,7 +45,7 @@ abstract class Light_Controller {
      * @param unknown_type $charset
      * @param unknown_type $type
      */
-    public function display( $tpl, $charset = 'utf-8', $type = 'text/html' ){
+    protected function display( $tpl, $charset = 'utf-8', $type = 'text/html' ){
         $this->view->display( $tpl, $charset, $type );
     }
     
