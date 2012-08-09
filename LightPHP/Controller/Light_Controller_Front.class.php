@@ -14,7 +14,8 @@ class Light_Controller_Front{
     
     private function __construct(){
         //首先加载配置
-        $this->setConfig( FRAMEWORK_PATH.'/Config/config.ini' );
+        Light_Config::load( FRAMEWORK_PATH . '/Config/config.ini' );
+        $this->config = Light_Config::get();
     }
     
     private function __clone(){}
@@ -58,9 +59,9 @@ class Light_Controller_Front{
      * @param unknown_type $path
      */
     public function setConfig( $path ){
-        $config = Light_Config_Factory::factory( $path );
+        $config = Light_Config::load( $path );
 
-        $this->config = Light_Util::arrayMerge( $this->config, $config->get() );
+        $this->config = merge( $this->config, Light_Config::get() );
     }
     
     /**

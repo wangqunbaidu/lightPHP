@@ -1,49 +1,48 @@
 <?php
 /**
- * config基类 为各中配置文件格式提供基本方法
- * config为系统提供, 只读
- *
+ *  配置操作类
+ *  支持php array和ini文件
  */
-abstract class Light_Config{
-    //path
-    protected $path;
-    
-    //已取出的config 应为一个数组
-    protected $config = array();
-    
-    public function __construct( $path = '' ){
-        $this->setConfig( $path );
-    }
+class Light_Config{
+    private static $config;
     
     /**
-     * 设置config的路径 设置完自动加载
-     *
-     * @param unknown_type $path
-     */
-    public function setConfig( $path = '' ){
-        $this->path = $path;
-        $this->load();
-    }
-    
-    /**
-     * 子类实现load方法 处理加载配置的逻辑
-     *
-     */
-    abstract protected function load();
-    
-    /**
-     * 通用获取配置的节点信息
+     * 获取一个配置节点
      *
      * @param unknown_type $section
      * @param unknown_type $name
      * @return unknown
      */
-    public function get( $section = null, $name = null ){
-        if( !$section ) return $this->config;
+    public static function get( $section = null, $name = null ){
+        return self::$config->get( $section, $name );
+    }   
+    
+    /**
+     *  工厂方法 获取配置实例
+     *
+     * @param unknown_type $path
+     * @return unknown
+     */
+    public static function load( $path ){
+        //获取文件后缀 
+        $info = new Light_File_Info( $path );
         
-        $section = $this->config[$section];
+        $type = $info->getExtension( $path );
+
+        switch ( $type ){
+            case 'php':
+                require_once( FRAMEWORK_PATH.'/Config/Light_Config_Array.class.php' );
+                self::$config = new Light_Config_Array( $path );
+                break;
+            //some type case
+            //
+            default:
+                require_once( FRAMEWORK_PATH.'/Config/Light_Config_INI.class.php' );
+                self::$config = new Light_Config_INI( $path );
+                break;
+        };
         
-        return $name ? $section[$name] : $section;
+        return self::$config;
     }
 }
 ?>

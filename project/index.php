@@ -31,7 +31,7 @@ View::setEngine($smarty);
 */
 
 //设置配置路径 如没配置 则会自动加载系统配置 配置文件类型暂时只能为ini 可扩展php-array类型 xml等
-$framework->setConfig( APP_PATH.'/Common/config/config.php' );
+Light_Config::load( APP_PATH.'/Common/config/config.php' );
 
 //分发路由
 $framework->dispatch();
