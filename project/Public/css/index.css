@@ -1,0 +1,21 @@
+table{
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #000;
+}
+
+caption{
+    background: #ff9;
+    padding: 10px;
+}
+
+tr{
+    border-left: 1px solid #000;
+    border-top: 1px solid #000;
+}
+
+td, th{
+    padding: 10px;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+}
