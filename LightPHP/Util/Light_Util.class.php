@@ -4,6 +4,7 @@
  *
  */
 class Light_Util{
+    //import path的分割符
     const IMPORT_PATH_LIMIT = '.';
     
     /**
