@@ -146,7 +146,7 @@ class Light_Controller_Front{
     private function loadController( $router ){
         $file = 'Controller.' . ( $router['group'] ?  $router['group'] . '.' : '' ) . $router['controller'];
         
-        return Light_Util::import( $file );
+        return import( $file );
     }
     
     /**
@@ -191,7 +191,6 @@ class Light_Controller_Front{
         $temp['controller'] = 'EmptyController';
         
         if ( !$this->loadController( $temp ) ) {
-            
         	throw new Light_Exception( "无法加载控制器{$router['controller']}" );
         } else {
             //执行empty controller

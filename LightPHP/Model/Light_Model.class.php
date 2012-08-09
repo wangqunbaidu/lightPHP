@@ -6,6 +6,10 @@
 class Light_Model{
     private static $MODEL_DIRECTORY;
     
+    public function __construct( $modelname = '' ){
+        
+    }
+    
     public static function setDirectory( $path ){
         self::$MODEL_DIRECTORY = rtrim( $path, '/' ) . '/';
     }   

@@ -1,6 +1,7 @@
 <?php
 define( FRAMEWORK_PATH, dirname(__FILE__) );
 
+require_once( FRAMEWORK_PATH.'/Common/Common.php' );
 require_once( FRAMEWORK_PATH.'/Util/Light_Util.class.php' );
 require_once( FRAMEWORK_PATH.'/File/Light_File_Info.class.php' );
 require_once( FRAMEWORK_PATH.'/Exception/Light_Exception.class.php');

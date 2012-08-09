@@ -1,5 +1,5 @@
 <?php
-Light_Util::import('Controller.Common.CommonController');
+import('Controller.Common.CommonController');
 //require_once( APP_PATH.'/Controller/Common/CommonController.class.php' );
 
 class IndexController extends CommonController{
@@ -8,7 +8,7 @@ class IndexController extends CommonController{
         //$this->assign('name', 'jsyczhanghao');
         
         //require_once( APP_PATH.'/Model/ProductModel.class.php' );
-        Light_Util::import('Model.ProductModel');
+        //import('Model.ProductModel');
         
         //$product = Light_Model::getModel('Product', '衣服', 200);
         $product = new ProductModel('衣服', 200);
