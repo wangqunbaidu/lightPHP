@@ -109,7 +109,7 @@ class Light_Controller_Front{
         //如果没有分组 则直接返回
         if ( !$grouplist ) return false;
         
-        $grouplist = explode(',', $grouplist);
+        if ( is_string($grouplist) ) $grouplist = explode( ',', $grouplist );
         
         return in_array( $group, $grouplist );
     }

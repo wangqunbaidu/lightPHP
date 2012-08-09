@@ -17,6 +17,10 @@ class Light_Config_Factory{
         $type = $info->getExtension( $path );
 
         switch ( $type ){
+            case 'php':
+                require_once( FRAMEWORK_PATH.'/Config/Light_Config_Array.class.php' );
+                $config = new Light_Config_Array( $path );
+                break;
             //some type case
             //
             default:

@@ -10,8 +10,8 @@ class IndexController extends CommonController{
         //require_once( APP_PATH.'/Model/ProductModel.class.php' );
         Light_Util::import('Model.ProductModel');
         
-        $product = Light_Model::getModel('Product', '衣服', 200);
-        
+        //$product = Light_Model::getModel('Product', '衣服', 200);
+        $product = new ProductModel('衣服', 200);
         $product->save();
         
         $product = new ProductModel('裤子', 200);
