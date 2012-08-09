@@ -14,6 +14,8 @@ $framework = Light_Controller_Front::getInstance();
 //设置控制器路径
 $framework->setControllerDirectory( APP_PATH.'/Controller' );
 
+$framework->setModelDirectory( APP_PATH.'/Model' );
+
 //设置view路径 如使用第3方模板引擎 则直接在第3方模板引擎上设置即可
 $framework->setViewDirectory( APP_PATH.'/View' );
 

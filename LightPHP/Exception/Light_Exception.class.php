@@ -12,9 +12,5 @@ class Light_Exception extends Exception {
         echo "<div style='padding: 20px; background: #ff9; margin: 10px; font-family: 微软雅黑; text-align: center;'>{$content}</div>";
         exit();
     }
-    
-    public static function error( $message = '' ){
-        new self( $message );
-    }
 }
 ?>

@@ -63,7 +63,7 @@ abstract class Light_Controller {
      *
      */
     public function __empty(){
-        Light_Exception::error( "控制器{$this->controller}中不存在{$this->action}方法" );
+        throw new Light_Exception( "控制器{$this->controller}中不存在{$this->action}方法" );
     }
     
     /**

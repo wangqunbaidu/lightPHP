@@ -145,8 +145,14 @@ class Light_Controller_Front{
      */
     private function loadController( $router ){
         $path = Light_Register::get('controllerDirectory') . ( $router['group'] ?  $router['group'] . '/' : '' ) . $router['controller'] . '.class.php';
-
-        return @include_once( $path );
+        
+        $result = @include_once( $path );
+       
+        if ( !$result ) {
+        	throw new Light_Exception(" 文件 {$path} 木有找到！ ");
+        }
+        
+        return $result;
     }
     
     /**
@@ -192,7 +198,7 @@ class Light_Controller_Front{
         
         if ( !$this->loadController( $temp ) ) {
             
-        	Light_Exception::error( "无法加载控制器{$router['controller']}" );
+        	throw new Light_Exception( "无法加载控制器{$router['controller']}" );
         } else {
             //执行empty controller
             new $temp['controller']( $router['controller'], $router['action'], $router['group'] );   
