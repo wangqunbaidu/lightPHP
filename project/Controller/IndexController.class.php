@@ -88,6 +88,14 @@ class IndexController extends CommonController{
         $this->display('Home/Index/index.tpl');
         //var_dump($result);
     }
+    
+    public function test(){
+        import('Model.TestModel');
+        
+        $model = new TestModel();
+        
+        var_dump($model->getAll());
+    }
 
     /**
      * 找不到action的时候执行

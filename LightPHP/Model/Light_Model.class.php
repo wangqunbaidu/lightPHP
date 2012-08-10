@@ -222,6 +222,10 @@ class Light_Model{
         return self::getDb()->affected_rows();
     }
     
+    /**
+     * 执行sql之前执行
+     *
+     */
     private function beforeExec(){
         $table = $this->tempTable ? $this->tempTable : $this->table;
         self::getDb()->table( $table );
