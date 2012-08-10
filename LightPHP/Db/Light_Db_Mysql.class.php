@@ -3,7 +3,7 @@
  * mysql driver的基类
  *
  */
-class Light_Db_Mysql_Base{
+class Light_Db_Mysql_Dirver{
     protected $currentConn;
     protected $connRW;
     protected $connRO;
@@ -11,7 +11,7 @@ class Light_Db_Mysql_Base{
     protected $_lastSql;
 
     public function __construct( $host = '', $user = '', $pass = '', $db = '' ){
-        if ( isset($host) && isset($user) && isset($pass) ) {
+        if ( isset($host) && isset($user) ) {
             $this->setWriteUser( $host, $user, $pass, $db );
         }
     }
@@ -216,38 +216,7 @@ class Light_Db_Mysql_Base{
     }
 }
 
-
-$n = new Light_Db_Mysql('localhost', 'root', '', 'zhanghao');
-
-//$n->setReadOnlyUser('localhost', 'zhanghao', '', 'zhanghao');
-
-//var_dump($n->query('insert into test values(null, 123)'));
-//
-//var_dump($n->query('select * from test'));
-//
-//var_dump($n->query('update test set name=23'));
-//
-//var_dump($n->query('select * from test'));
-$n->selectTable('test');
-
-//$n->where(array(
-//               'name' => 'jsyzhanghao',
-//               'age < 11 AND age > 20',
-//               'city' => array('like', '%"city%'),
-//               'a' => array('lt', 22)
-//           ),
-//      
-//           'sex = "m"')->field('name')->distinct('id')->group('name')->order('id desc')->limit()->page(3)->findAll();
-//           
-//echo $n->getLastSql();
-//$result = $n->field('id')->distinct('name')->find();
-//$result = $n->delete();   
-$result = $n->data(array('name' => 'f123d'))->order('id desc')->limit(1)->update();
-//$n->insert(array('name' => '123'));
-var_dump($result);
-//var_dump($result);
-
-class Light_Db_Mysql extends Light_Db_Mysql_Base {
+class Light_Db_Mysql extends Light_Db_Mysql_Dirver  {
     /**
      * 预设的where类型
      *
@@ -559,8 +528,10 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
      */
     private function getSelectData(){
     	$temp = array();
+
+    	$field = (array)$this->_field;
     	
-    	if ( $this->_field ) $temp['field'] = implode( ', ', $this->_field );
+    	$temp['field'] = empty($field) ? '*' : implode( ', ', $field );
     	
         return array_merge( $temp, $this->getConditionData() );
     }

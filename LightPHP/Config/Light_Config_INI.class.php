@@ -10,19 +10,21 @@ class Light_Config_INI extends Light_Config_Base {
 
     protected function load(){
         $temp = parse_ini_file( $this->path, true );
-        $this->parse( $temp );
+        $this->config = $this->parse( $temp );
     }
 
     private function parse( $ini )  {
-        $configs=array();
-        $config=array();
+        $configs = array();
+        $config = array();
         foreach ( $ini as $key => $value ) {
             foreach ( $value as $k => $v ) {
                 $configs = array_merge_recursive( $configs, $this->processKey( $config, $k, $v ) );
             }
             $this->config[$key] = $configs;
-            $configs=array();
+            $configs = array();
         }
+        
+        return $config;
     }
 
     private function processKey( $config = array(), $key, $value ) {
@@ -32,7 +34,7 @@ class Light_Config_INI extends Light_Config_Base {
                 $config[$temp] = $this->processKey( $config[$temp], $pieces[1], $value );
             }
         } else {
-            $config[$key]=$value;
+            $config[$key] = $value;
         }
         return $config;
     }

@@ -7,6 +7,12 @@
         </tr>
     </thead>
     <tbody>
+    <?php
+    var_dump($data);
+
+    exit();
+    ?>
+    
     <?php foreach ( $product as $key => $value ): ?>
         <tr>
             <td><?= $value->name; ?></td>

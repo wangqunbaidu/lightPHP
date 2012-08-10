@@ -105,7 +105,7 @@ class Light_Controller_Front{
      * @return unknown
      */
     private function checkIsGroup( $group = '' ){
-        $grouplist = $this->config['Framework']['group']['list'];
+        $grouplist = $this->config['group']['list'];
         
         //如果没有分组 则直接返回
         if ( !$grouplist ) return false;

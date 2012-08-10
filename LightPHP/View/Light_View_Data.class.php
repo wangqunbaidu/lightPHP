@@ -4,7 +4,7 @@
  *
  */
 class Light_View_Data{
-    private $data = array();
+    protected $data = array();
     
     /**
      * 设置值
