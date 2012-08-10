@@ -16,15 +16,26 @@ class Light_Db_Mysql_Base{
     
     public function setWriteUser( $host, $user, $pass, $db = '' ){
         $this->connRW = $this->connect( $host, $user, $pass );
-        $this->currentConn = $this->connRW;
+        $this->switchMode(1);
         $this->selectDb( $db );
     }
     
     public function setReadOnlyUser( $host, $user, $pass, $db = '' ){
         $this->connRO = $this->connect( $host, $user, $pass );
+        if ( !$this->connRW ) $this->connRW = $this->connRO;
         $this->selectDb( $db );
     }
     
+    
+    /**
+     * 切换读写模式
+     * 
+     *
+     * @param unknown_type $mode 0表示读 1表示写
+     */
+    protected function switchMode( $mode = 0 ){
+        $this->currentConn = $mode ? $this->connRW : $this->connRO;   
+    }
     
     /**
      * connect db
@@ -50,7 +61,7 @@ class Light_Db_Mysql_Base{
     public function selectDb( $db, $charset = '' ){
         if ( !$db ) return ;
         
-        if( !@mysql_select_db( $db, $this->connRW ) ){
+        if( $this->connRW && !@mysql_select_db( $db, $this->connRW ) ){
             Light_Exception::error( "无法连接到数据库{$db}, " . mysql_error( $this->connRW ) );
         }
         
@@ -63,13 +74,17 @@ class Light_Db_Mysql_Base{
         }
     }
     
+    /**
+     * 设置charset
+     *
+     * @param unknown_type $charset
+     */
     private function setCharset( $charset ){
         $string = "SET NAMES {$charset}";
-        mysql_query( $string, $this->connRW );
         
-        if ( $this->connRO ) {
-        	mysql_query( $string, $this->connRO );
-        }
+        if ( $this->connRW ) mysql_query( $string, $this->connRW );
+        
+        if ( $this->connRO ) mysql_query( $string, $this->connRO );
     }
     
     /**
@@ -81,7 +96,11 @@ class Light_Db_Mysql_Base{
     public function query( $sql ){
         $type = self::getSqlType( $sql );
         
-        $this->currentConn = $this->connRO && $type == 'select' ? $this->connRO : $this->connRW;
+        if ( $this->connRO && $type == 'select' ) {
+        	$this->switchMode();
+        } else {
+            $this->switchMode(1);
+        }
         
         $result = mysql_query( $sql, $this->currentConn );
         
@@ -114,20 +133,7 @@ class Light_Db_Mysql_Base{
 					break;
 					
 			case 'insert' :
-					if ( $this->affected_rows() > 0 ) {
-						$result = $this->insert_id();
-					} else {
-						$result = false;
-					}
-					
-					break;
-					
-			case 'delete' :
-					if ( $this->affected_rows() > 0 ) {
-						$result = true;
-					} else {
-						$result = false;
-					}
+                    $result = $this->affected_rows() > 0 ? $this->insert_id() : false;
 					
 					break;
 					
@@ -167,11 +173,54 @@ class Light_Db_Mysql_Base{
 }
 
 
-$n = new Light_Db_Mysql_Base('localhost', 'zhanghao', '123456', 'test');
+$n = new Light_Db_Mysql_Base('localhost', 'root', '123456', 'zhanghao');
+
+$n->setReadOnlyUser('localhost', 'zhanghao', '123456', 'zhanghao');
 
 var_dump($n->query('insert into test values(null, 123)'));
 
-class Light_Db_Mysql{
+var_dump($n->query('select * from test'));
+
+var_dump($n->query('update test set name=23'));
+
+var_dump($n->query('select * from test'));
+
+
+
+class Light_Db_Mysql extends Light_Db_Mysql_Base {
+    private $table;
+    private $tempTable;
+    private $order;
+    private $where;
+    private $field;
+    private $group;
+    private $limit;
     
+    private $sql;
+    private $lastSql;
+    
+    private $data = array();
+    
+    public function selectTable( $table ){
+        $this->table = $table;
+        
+        return $this->table( $table );
+    }
+    
+    public function table( $table ){
+        $this->tempTable = $table;
+        
+        return $this;
+    }
+    
+    public function data( $data = array() ){
+        $this->data = $data;
+        
+        return $this;
+    }
+    
+    public function getLastSql(){
+        return $this->lastSql;
+    }
 }
 ?>

@@ -4,6 +4,7 @@ import('Controller.Common.CommonController');
 
 class IndexController extends CommonController{
     public function index(){
+
         //$this->name = 'jsyczhanghao';
         //$this->assign('name', 'jsyczhanghao');
         
