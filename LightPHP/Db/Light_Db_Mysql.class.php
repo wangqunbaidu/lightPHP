@@ -40,7 +40,7 @@ class Light_Db_Mysql_Base{
      * 切换读模式
      *
      */
-    protected function switchReadModel(){
+    protected function switchReadMode(){
         $this->currentConn = $this->connRO;
     }
 
@@ -104,7 +104,7 @@ class Light_Db_Mysql_Base{
         $type = self::getSqlType( $sql );
 
         if ( $this->connRO && $type == 'select' ) {
-            $this->switchReadModel();
+            $this->switchReadMode();
         } else {
             $this->switchWriteMode();
         }
@@ -218,7 +218,6 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
     private $_group;
     private $_limit = 10;
     private $_page = 0;
-    private $_limitLength = self::LIMIT_LENGTH ;
 
     private $_sql;
 
@@ -238,25 +237,30 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
 
     public function data( $data = array() ){
         $this->_data = $data;
-
+        
         return $this;
     }
 
     public function limit( $limit = 10 ){
         $this->_limit = (int)$limit;
+        
         return $this;
     }
 
     public function page( $page = 1 ){
         $this->_page = (int)$page - 1;
-
+        
         return $this;
     }
 
     public function order( $order ){
-        $order = (array)$order;
+        $this->_order = implode( ', ', (array)$order );
         
-        $this->_order = implode( ', ', $order );
+        return $this;
+    }
+
+    public function group( $group ){
+        $this->_group = implode( ', ', (array)$group );
         
         return $this;
     }
@@ -277,25 +281,29 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
     }
 
     public function where( $condition ){
-        if ( is_array( $condition ) ) {
-            $temp = array();
+        $condition = (array)$condition;
 
-            foreach ( $condition as $key => $item ) {
-                $key = self::eacape( $key );
+        $temp = array();
 
-                if ( is_array( $item ) ) {
-                    $item = $key . ( self::$prepareWhere[$item[0]] ? self::$prepareWhere[$item[0]] : $item[0] ) . self::eacape( $item[1] );
-                } else if( is_string( $item ) ) {
-                    $item = $key . '=' . self::eacape( $item );
-                }
+        foreach ( $condition as $key => $item ) {
 
-                $temp[] = $item;
+            if ( is_numeric( $key ) ) {
+                $temp[] = self::eacape( $item );
+                continue;
             }
 
-            $this->_where = implode( ' AND ', $temp );
-        } else {
-            $this->_where = $condition;
+            $key = self::eacape( $key );
+
+            if ( is_array( $item ) ) {
+                $item = $key . ( self::$prepareWhere[$item[0]] ? self::$prepareWhere[$item[0]] : $item[0] ) . self::eacape( $item[1] );
+            } else if( is_string( $item ) ) {
+                $item = $key . '=' . self::eacape( $item );
+            }
+
+            $temp[] = $item;
         }
+
+        $this->_where = implode( ' AND ', $temp );
 
         return $this;
     }
