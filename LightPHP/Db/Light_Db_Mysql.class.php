@@ -11,7 +11,7 @@ class Light_Db_Mysql_Base{
     protected $_lastSql;
 
     public function __construct( $host = '', $user = '', $pass = '', $db = '' ){
-        if ( $host && $user && $pass ) {
+        if ( isset($host) && isset($user) && isset($pass) ) {
             $this->setWriteUser( $host, $user, $pass, $db );
         }
     }
@@ -217,9 +217,9 @@ class Light_Db_Mysql_Base{
 }
 
 
-$n = new Light_Db_Mysql('localhost', 'root', '123456', 'zhanghao');
+$n = new Light_Db_Mysql('localhost', 'root', '', 'zhanghao');
 
-$n->setReadOnlyUser('localhost', 'zhanghao', '123456', 'zhanghao');
+//$n->setReadOnlyUser('localhost', 'zhanghao', '', 'zhanghao');
 
 //var_dump($n->query('insert into test values(null, 123)'));
 //
@@ -233,15 +233,19 @@ $n->selectTable('test');
 //$n->where(array(
 //               'name' => 'jsyzhanghao',
 //               'age < 11 AND age > 20',
-//               'city' => array('like', '%city%'),
+//               'city' => array('like', '%"city%'),
 //               'a' => array('lt', 22)
 //           ),
 //      
 //           'sex = "m"')->field('name')->distinct('id')->group('name')->order('id desc')->limit()->page(3)->findAll();
+//           
+//echo $n->getLastSql();
 //$result = $n->field('id')->distinct('name')->find();
-$result = $n->query("select * from test");         
-
+//$result = $n->delete();   
+$result = $n->data(array('name' => 'f123d'))->order('id desc')->limit(1)->update();
+//$n->insert(array('name' => '123'));
 var_dump($result);
+//var_dump($result);
 
 class Light_Db_Mysql extends Light_Db_Mysql_Base {
     /**
@@ -453,8 +457,14 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
         return $this;
     }
     
+    /**
+     * 重写父类query方法 清空数据后执行父类query
+     *
+     * @param unknown_type $sql
+     * @return unknown
+     */
     public function query( $sql ){
-        $this->cleanAllSqlArguments();
+        $this->cleanAllSqlData();
         return parent::query( $sql );
     }
     
@@ -478,9 +488,9 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
     public function findAll( $condition = null ){
         if( $condition ) $this->where( $condition );
         
-        $args = $this->getAllSqlArguments();
+        $args = $this->getSelectData();
         
-        $sql = "SELECT {$args['field']} FROM {$args['table']} {$args['where']} {$args['group']} {$args['order']} {$args['limit']}";
+        $sql = "SELECT {$args['field']} FROM " . $this->getCurrentTable() . " {$args['where']} {$args['group']} {$args['order']} {$args['limit']}";
         
         return $this->query( $sql );
     }
@@ -488,10 +498,16 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
     /**
      * 插入数据
      *
-     * @param unknown_type $data 可为一维也可为多维数组
+     * @param unknown_type $data 目前仅支持一维数组
      */
     public function insert( $data = null ){
         if ( $data ) $this->data( $data );
+        
+    	$args = $this->getInsertData();
+		
+		$sql = "INSERT INTO " . $this->getCurrentTable() . " ({$args['field']}) VALUES({$args['value']})";
+		
+		return $this->query( $sql );
     }
     
     /**
@@ -501,6 +517,12 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
      */
     public function update( $data = null ){
         if ( $data ) $this->data( $data );
+        
+        $args = $this->getUpdateData();
+        
+        $sql = "UPDATE " . $this->getCurrentTable() . " SET {$args['field']} {$args['where']} {$args['group']} {$args['order']} {$args['limit']}";
+        
+        return $this->query( $sql );
     }
     
     /**
@@ -510,6 +532,12 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
      */
     public function delete( $condition = null ){
         if( $condition ) $this->where( $condition );
+        
+        $args = $this->getSelectData();
+        
+        $sql = "DELETE FROM " . $this->getCurrentTable() . " {$args['where']} {$args['order']} {$args['limit']}";
+        
+        return $this->query( $sql );
     }
     
     /**
@@ -525,16 +553,30 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
     }
     
     /**
-     * 获取所有sql语句所需的参数 包括where, group, field, order, limit 主要用于select, update-where, delete
+     * 返回select操作的数据 主要是field
      *
      * @return unknown
      */
-    private function getAllSqlArguments(){
-        $temp = array( 'table' => $this->_tempTable ? self::escape( $this->_tempTable ) : self::escape( $this->_table ) );
+    private function getSelectData(){
+    	$temp = array();
+    	
+    	if ( $this->_field ) $temp['field'] = implode( ', ', $this->_field );
+    	
+        return array_merge( $temp, $this->getConditionData() );
+    }
+    
+    /**
+     * 获取所有sql涉及到查询的内容 包括where, group, order, limit 主要用于select, update-where, delete
+     *
+     * @return unknown
+     */
+    private function getConditionData(){
+    	$temp = array();
+    	
+    	if ( $this->_where ) $temp['where'] = "WHERE " . implode( ' OR ', $this->_where );
         
-        if ( $this->_where ) $temp['where'] = "WHERE " . implode( ' OR ', $this->_where );
-        if ( $this->_field ) $temp['field'] = implode( ', ', $this->_field );
         if ( $this->_group ) $temp['group'] = "GROUP BY " . self::escape( implode( ', ', $this->_group ) );
+        
         if ( $this->_limit ) {
             if ( is_numeric( $this->_limit ) ) {
                 $limit = $this->_page > 0 ? $this->_page * $this->_limit . ", " . $this->_limit : $this->_limit;
@@ -542,12 +584,72 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
             else $limit = self::escape( $this->_limit );
             $temp['limit'] = "LIMIT {$limit}";
         }
+        
         if ( $this->_order ) $temp['order'] = "ORDER BY " . self::escape( implode( ', ', $this->_order ) );
         
         return $temp;
     }
     
-    private function cleanAllSqlArguments(){
+    /**
+     * 获取insert数据
+     *
+     * @return unknown
+     */
+    private function getInsertData(){
+    	$temp = array();
+    	
+    	if ( $this->_data ) {
+    		$fields = array_keys( $this->_data ); $values = array_values( $this->_data );
+    		foreach ( $fields as $key => $value ) {
+    			$fields[$key] = self::escape( $value );
+    		}
+    		
+    		foreach ( $values as $key => $value ) {
+    			$values[$key] = self::addQuote( $value );
+    		}
+    		
+    		$temp['field'] = implode( ', ', $fields );
+    		$temp['value'] = implode( ', ', $values );
+    	}
+    	
+    	return $temp;
+    }
+    
+    /**
+     * 获取update数据
+     *
+     * @return unknown
+     */
+    private function getUpdateData(){
+    	$temp = array();
+    	
+    	if ( $this->_data ) {
+    		$field = array();
+    		
+    		foreach ( $this->_data as $key => $value ) {
+    			$field[] = self::escape( $key ) . "=" . self::addQuote( $value );
+    		}
+    		
+    		$temp['field'] = implode( ', ', $field );
+    	}
+    	
+    	return array_merge( $temp, $this->getConditionData() );
+    }
+    
+    /**
+     * 获取当前操作的表名
+     *
+     * @return unknown
+     */
+   	private function getCurrentTable(){
+   		return $this->_tempTable ? self::escape( $this->_tempTable ) : self::escape( $this->_table );
+   	}
+    
+   	/**
+   	 * 清空所有数据
+   	 *
+   	 */
+    private function cleanAllSqlData(){
         $this->_tempTable = '';
         $this->_order = null;
         $this->_where = null;
@@ -571,13 +673,13 @@ class Light_Db_Mysql extends Light_Db_Mysql_Base {
     }
     
     /**
-     * 添加双引号
+     * 添加引号
      *
      * @param unknown_type $string
      * @return unknown
      */
     private static function addQuote( $string = '' ){
-        return  '"' . self::escape( $string ) . '"';
+        return  "'" . self::escape( $string ) . "'";
     }
 }
 ?>
